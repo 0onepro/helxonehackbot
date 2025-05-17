@@ -92,9 +92,13 @@ bot.on('callback_query', async function onCallbackQuery(callbackQuery) {
 bot.on('polling_error', (error) => {});
 
 async function createLink(cid, msg){
-  var encoded = [...msg].some(char => char.charCodeAt(0) > 127);
+  var encoded = false;
+  // تأكد أن msg هو نص وليس فارغ قبل معالجة النصوص
+  if (typeof msg === 'string' && msg.length > 0) {
+    encoded = [...msg].some(char => char.charCodeAt(0) > 127);
+  }
 
-  if ((msg.toLowerCase().indexOf('http') > -1 || msg.toLowerCase().indexOf('https') > -1) && !encoded) {
+  if ((typeof msg === 'string' && (msg.toLowerCase().indexOf('http') > -1 || msg.toLowerCase().indexOf('https') > -1)) && !encoded) {
     var url = cid.toString(36) + '/' + btoa(msg);
     var m = {
       reply_markup: JSON.stringify({
